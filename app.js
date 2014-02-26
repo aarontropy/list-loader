@@ -49,7 +49,8 @@ app.directive('listLoader', function() {
             var inputDiv = element[0].firstChild.lastChild;
             inputDiv.onkeydown = inputDiv.onkeypress = function(event) {
                 if (event.which === 13) {
-                    addLine(event.srcElement.innerText);
+                    var lines = event.srcElement.innerText.split('\n');
+                    angular.forEach(lines, function(line) { addLine(line); });
                     // clear the contenteditable div for next entry
                     event.srcElement.innerText = '';
                     event.preventDefault();                 
