@@ -18,7 +18,7 @@ app.directive('listLoader', function() {
                 var deferred = $q.defer();
 
                 setTimeout(function() {
-                    line.text = $scope.lineaction(line.input);
+                    line.output = $scope.lineaction(line.input);
                     deferred.resolve(line);
                 },0);
 
@@ -30,23 +30,27 @@ app.directive('listLoader', function() {
             var input = element[0].firstChild.lastChild;
 			input.onkeydown = input.onkeypress = function(event) {
 				if (event.which === 13) {
-					scope.$apply(function() {
-						// push a new line object on to lines array
-                        var line = {
-                            input: event.srcElement.innerText, 
-                            text: event.srcElement.innerText,
-                            complete: false,
-                        };
+                    var line = {
+                        text: event.srcElement.innerText,
+                        input: event.srcElement.innerText, 
+                        output: '',
+                        complete: false,
+                    };
+
+                    scope.$apply(function() {
+                        // push a new line object on to lines array
 						scope.lines.push(line);
-                    
-                        scope.doAction(line).then(function(tline) {
-                            console.log(scope.lines);
-                            tline.complete = true;
-                        });
-						// clear the contenteditable div for next entry
-						event.srcElement.innerText = '';
-						event.preventDefault();					
 					});
+                    
+                    scope.doAction(line).then(function(tline) {
+                        tline.text = tline.output;
+                        tline.complete = true;
+                        // scope.$apply(function() {
+                        // });
+                    });
+                    // clear the contenteditable div for next entry
+                    event.srcElement.innerText = '';
+                    event.preventDefault();                 
 				}
 			}
 
