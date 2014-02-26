@@ -4,24 +4,45 @@ var app = angular.module('listloader.app', []);
 app.directive('listLoader', function() {
 	return {
 		restrict: "A",
-		template: "<div class=\"listLoader\" contenteditable></div><div ng-repeat=\"line in lines track by $index\">{{line.text}}</div>",
+		template: "<div class=\"listLoader\">" +
+            "<div ng-repeat=\"line in lines track by $index\">{{line.text}}" +
+            "<span ng-hide=\"line.complete\" style=\"float: right\">loading</span></div>" +
+            "<div class=\"listInput\" contenteditable></div>" +
+            "</div>",
 		scope: {
-			action: '&',
+			lineaction: '=action',
 		},
-		controller: function($scope) { $scope.lines = []; },
+		controller: function($scope, $q) { 
+            $scope.lines = []; 
+            $scope.doAction = function(line) {
+                var deferred = $q.defer();
+
+                setTimeout(function() {
+                    line.text = $scope.lineaction(line.input);
+                    deferred.resolve(line);
+                },0);
+
+                return deferred.promise;
+
+            }
+        },
 		link: function(scope, element, attrs) {
-
-
-			console.log(scope.action("hi"));
-			
-			element[0].onkeydown = element[0].onkeypress = function(event) {
+            var input = element[0].firstChild.lastChild;
+			input.onkeydown = input.onkeypress = function(event) {
 				if (event.which === 13) {
 					scope.$apply(function() {
 						// push a new line object on to lines array
-						scope.lines.push({
-							text: scope.lineAction(event.srcElement.innerText),
-							complete: true,
-						});
+                        var line = {
+                            input: event.srcElement.innerText, 
+                            text: event.srcElement.innerText,
+                            complete: false,
+                        };
+						scope.lines.push(line);
+                    
+                        scope.doAction(line).then(function(tline) {
+                            console.log(scope.lines);
+                            tline.complete = true;
+                        });
 						// clear the contenteditable div for next entry
 						event.srcElement.innerText = '';
 						event.preventDefault();					
@@ -36,6 +57,11 @@ app.directive('listLoader', function() {
 
 app.controller('listloader.ctrl', function($scope) {
 	$scope.myAction = function(line) {
-		return "LINE: " + line;
+        for (var i=0; i<1000000000; i++) {
+            k = i+1;
+        }
+       return "Converted input [" + line + "] to this output";
 	}
 })
+
+

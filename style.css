@@ -7,3 +7,7 @@
 	color: grey;
 	font-style: italic;
 }
+
+[contenteditable]:focus {
+    border: none;
+}
