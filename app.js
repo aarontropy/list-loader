@@ -27,27 +27,29 @@ app.directive('listLoader', function() {
             }
         },
 		link: function(scope, element, attrs) {
-            var input = element[0].firstChild.lastChild;
-			input.onkeydown = input.onkeypress = function(event) {
-				if (event.which === 13) {
-                    var line = {
-                        text: event.srcElement.innerText,
-                        input: event.srcElement.innerText, 
-                        output: '',
-                        complete: false,
-                    };
+            var addLine = function(text) {
+                var line = {
+                    text: text,
+                    input: text, 
+                    output: '',
+                    complete: false,
+                };
 
-                    scope.$apply(function() {
-                        // push a new line object on to lines array
-						scope.lines.push(line);
-					});
-                    
-                    scope.doAction(line).then(function(tline) {
-                        tline.text = tline.output;
-                        tline.complete = true;
-                        // scope.$apply(function() {
-                        // });
-                    });
+                scope.$apply(function() {
+                    // push a new line object on to lines array
+    				scope.lines.push(line);
+    			});
+                
+                scope.doAction(line).then(function(tline) {
+                    tline.text = tline.output;
+                    tline.complete = true;
+                });
+            };
+
+            var inputDiv = element[0].firstChild.lastChild;
+            inputDiv.onkeydown = inputDiv.onkeypress = function(event) {
+                if (event.which === 13) {
+                    addLine(event.srcElement.innerText);
                     // clear the contenteditable div for next entry
                     event.srcElement.innerText = '';
                     event.preventDefault();                 
