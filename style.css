@@ -1,0 +1,9 @@
+.listloader {
+	border: 1px solid #ccc;
+}
+
+[contenteditable]:empty:not(:focus):before {
+	content: "List here";
+	color: grey;
+	font-style: italic;
+}
