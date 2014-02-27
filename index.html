@@ -6,13 +6,15 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
 	<script src="app.js"></script>
+
+
 	 
 </head>
 <body ng-app="listloader.app" ng-controller="listloader.ctrl">
 
 
 	<h2>List Loader Demo</h2>
-	<div list-loader action="myAction" />
+	<div list-loader list="myObjects" property="text" transform="myTransform" />
 
 </body>
 </html>
