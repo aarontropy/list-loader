@@ -21,8 +21,14 @@ app.directive('listLoader', ['$timeout', function($timeout) {
         },
         link: function(scope, element, attrs) {
             scope.displayText = function(object) {
+                //this is a poor way of detecting whether or not
+                // the transform is complete.  Rethink
+                if (object[scope.property]) {
+                    object.$complete = true;
+                }
+
                 if (object.$complete) {   
-                    return object.text;
+                    return object[scope.property];
                 } else {
                     return object.$input;
                 }
@@ -42,25 +48,24 @@ app.directive('listLoader', ['$timeout', function($timeout) {
 
                         scope.$apply(function() {
                             scope.objects.push(obj);
+                            scope.transform(line,obj);
                         });
 
-                        scope.$evalAsync(function() {
-                            scope.transform(line,obj);
-                            obj.$complete = true;
-                        })
+                        // scope.$apply(function() {
+                        // })
+
+                        // scope.$evalAsync(function() {
+                        //     scope.transform(line,obj);
+                        //     // obj.$complete = true;
+                        // })
 
                     });
-                    // scope.$apply();
-                    // scope.$apply();
-
 
                     // clear the contenteditable div for next entry
                     event.srcElement.innerText = '';
                     event.preventDefault();                 
                 }
             }
-
-            // scope.$watch('lines', function(newVal, oldVal) { }, true);
         }
     }
 }])
@@ -74,9 +79,6 @@ app.controller('listloader.ctrl', ['$scope', '$timeout', function($scope, $timeo
         }, 1000);
     }
 
-    $scope.myAction = function(line) {
-       return "Converted input [" + line + "] to this output";
-    }
 }])
 
 
