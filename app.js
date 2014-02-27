@@ -14,11 +14,6 @@ app.directive('listLoader', ['$timeout', function($timeout) {
             property: "@",
             transform: "="
         },
-        controller: function($scope) {
-            $scope.test = function() {
-                $scope.objects.push({text: "I was pushed"});
-            }
-        },
         link: function(scope, element, attrs) {
             scope.displayText = function(object) {
                 //this is a poor way of detecting whether or not
@@ -50,14 +45,6 @@ app.directive('listLoader', ['$timeout', function($timeout) {
                             scope.objects.push(obj);
                             scope.transform(line,obj);
                         });
-
-                        // scope.$apply(function() {
-                        // })
-
-                        // scope.$evalAsync(function() {
-                        //     scope.transform(line,obj);
-                        //     // obj.$complete = true;
-                        // })
 
                     });
 
